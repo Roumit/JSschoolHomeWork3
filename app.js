@@ -9,7 +9,7 @@ GAME RULES:
 
 */
 
-const RESET_VALUE = 1;
+const RESET_VALUE = 2;
 const VIN_VALUE = 100;
 
 let scores = [0, 0];
@@ -42,7 +42,7 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
   diceElement_2.src = `dice-${dice_2}.png`;
   diceElement_2.style.display = 'block';
 
-  if (dice_1 !== RESET_VALUE && dice_2 !== RESET_VALUE) {
+  if (dice_1 !== RESET_VALUE && dice_2 !== RESET_VALUE && dice_1 !== dice_2) {
     current += dice_1 + dice_2;
     document.getElementById('current-'+activePlayer).textContent = current;
 
