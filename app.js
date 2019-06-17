@@ -10,8 +10,8 @@ GAME RULES:
 */
 
 const RESET_VALUE = 2;
-const VIN_VALUE = 100;
 
+let vin_value = 100;
 let scores = [0, 0];
 let activePlayer = 0;
 let current = 0;
@@ -29,6 +29,9 @@ const initGame = () => {
   document.querySelector('.btn-hold').style.display = 'block';
   scores = [0, 0];
   current = 0;
+  vin_value = Math.round(document.getElementById('input-vin-value').value) || 100;
+  document.getElementById('input-vin-value').value = vin_value;
+
 }
 
 initGame();
@@ -46,7 +49,7 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     current += dice_1 + dice_2;
     document.getElementById('current-'+activePlayer).textContent = current;
 
-    if (scores[activePlayer] + current >= VIN_VALUE) {
+    if (scores[activePlayer] + current >= vin_value) {
       alert(`Player ${activePlayer+1} won!!!`);
       document.querySelector('.btn-roll').style.display = 'none';
       document.querySelector('.btn-hold').style.display = 'none';
