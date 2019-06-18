@@ -12,11 +12,26 @@ GAME RULES:
 const RESET_VALUE = 2;
 
 let vin_value = 100;
-let scores = [0, 0];
 let activePlayer = 0;
 let current = 0;
+let players = [0, 0];
 const diceElement_1 = document.getElementById('firstDice');
 const diceElement_2 = document.getElementById('secondDice');
+
+const Gamer = function(name, score=0) {
+  this.name = name;
+  this.score = score; 
+};
+
+Gamer.prototype.getScore = function() {
+  return this.score;
+};
+Gamer.prototype.setScore = function(score) {
+  return this.score += score;  //add new score to scores
+}; 
+Gamer.prototype.resetScore = function() {
+  return this.score = 0;
+};
 
 const initGame = () => {
   document.querySelector('#current-0').textContent = 0;
@@ -27,11 +42,14 @@ const initGame = () => {
   diceElement_2.style.display = 'none';
   document.querySelector('.btn-roll').style.display = 'block';
   document.querySelector('.btn-hold').style.display = 'block';
-  scores = [0, 0];
   current = 0;
   vin_value = Math.round(document.getElementById('input-vin-value').value) || 100;
   document.getElementById('input-vin-value').value = vin_value;
-
+  let player1 = new Gamer(prompt("Имя первого игрока:", players[0].name) || "player1");
+  let player2 = new Gamer(prompt("Имя второго игрока:", players[1].name) || "player2");
+  players = [player1, player2];
+  document.getElementById('name-0').innerHTML = players[0].name;
+  document.getElementById('name-1').innerHTML = players[1].name;
 }
 
 initGame();
@@ -49,8 +67,8 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     current += dice_1 + dice_2;
     document.getElementById('current-'+activePlayer).textContent = current;
 
-    if (scores[activePlayer] + current >= vin_value) {
-      alert(`Player ${activePlayer+1} won!!!`);
+    if (players[activePlayer].score + current >= vin_value) {
+      alert(`${players[activePlayer].name} won!!!`);
       document.querySelector('.btn-roll').style.display = 'none';
       document.querySelector('.btn-hold').style.display = 'none';
 
@@ -72,8 +90,8 @@ const changePlayer = () => {
 }
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
-  scores[activePlayer] += current;
-  document.querySelector(`#score-${activePlayer}`).textContent = scores[activePlayer];
+  players[activePlayer].setScore(current);
+  document.querySelector(`#score-${activePlayer}`).textContent = players[activePlayer].getScore();
   changePlayer();
 });
 

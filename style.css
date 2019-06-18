@@ -169,6 +169,8 @@ i {
     font-size: 15px;
     color: #555;
     margin-left: 10px;
+    min: 0;
+
 }
 
 .winner { background-color: #f7f7f7; }
