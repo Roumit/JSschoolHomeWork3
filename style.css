@@ -169,8 +169,13 @@ i {
     font-size: 15px;
     color: #555;
     margin-left: 10px;
-    min: 0;
 
+}
+
+.btn-vins {
+    bottom: 10px;
+    transform: none;
+    left: 78%;
 }
 
 .winner { background-color: #f7f7f7; }

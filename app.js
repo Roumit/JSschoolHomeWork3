@@ -9,17 +9,26 @@ GAME RULES:
 
 */
 
+Storage.prototype.setObj = function(key, obj) {
+  return this.setItem(key, JSON.stringify(obj))
+}
+Storage.prototype.getObj = function(key) {
+  return JSON.parse(this.getItem(key))
+}
+
 const RESET_VALUE = 2;
 
 let vin_value = 100;
 let activePlayer = 0;
 let current = 0;
 let players = [0, 0];
+let vinsTable = localStorage.getObj("vins_table") || {};
 const diceElement_1 = document.getElementById('firstDice');
 const diceElement_2 = document.getElementById('secondDice');
 
-const Gamer = function(name, score=0) {
+const Gamer = function(name, vins=0, score=0) {
   this.name = name;
+  this.vins = vins;
   this.score = score; 
 };
 
@@ -33,6 +42,7 @@ Gamer.prototype.resetScore = function() {
   return this.score = 0;
 };
 
+
 const initGame = () => {
   document.querySelector('#current-0').textContent = 0;
   document.querySelector('#current-1').textContent = 0;
@@ -45,9 +55,16 @@ const initGame = () => {
   current = 0;
   vin_value = Math.round(document.getElementById('input-vin-value').value) || 100;
   document.getElementById('input-vin-value').value = vin_value;
-  let player1 = new Gamer(prompt("Имя первого игрока:", players[0].name) || "player1");
-  let player2 = new Gamer(prompt("Имя второго игрока:", players[1].name) || "player2");
-  players = [player1, player2];
+
+  let player1_name = prompt("Имя первого игрока:", players[0].name) || "player1";
+  let player2_name = prompt("Имя первого игрока:", players[1].name) || "player1";
+  players[0] = (vinsTable[player1_name]) ? 
+    new Gamer(player1_name, vinsTable[player1_name]) : new Gamer(player1_name);
+  players[1] = (vinsTable[player2_name]) ? 
+    new Gamer(player2_name, vinsTable[player2_name]) : new Gamer(player2_name);
+  
+  localStorage.setItem("test", players);
+  console.log(localStorage.getItem("test")[1].name);
   document.getElementById('name-0').innerHTML = players[0].name;
   document.getElementById('name-1').innerHTML = players[1].name;
 }
@@ -68,10 +85,12 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     document.getElementById('current-'+activePlayer).textContent = current;
 
     if (players[activePlayer].score + current >= vin_value) {
+      players[activePlayer].vins++;
+      vinsTable[players[activePlayer].name] = players[activePlayer].vins;
+      localStorage.setObj("vins_table", vinsTable);
       alert(`${players[activePlayer].name} won!!!`);
       document.querySelector('.btn-roll').style.display = 'none';
       document.querySelector('.btn-hold').style.display = 'none';
-
     }
     
   } else {
@@ -98,4 +117,16 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 
 document.querySelector('.btn-new').addEventListener('click', function() {
   initGame();
+});
+
+document.querySelector('.btn-vins').addEventListener('click', function() {
+  let vinTable_sort_arr = Object.entries(vinsTable).sort(function(a, b) {
+    if (a[1]<b[1]) return 1;
+    if (a[1]>b[1]) return -1;
+  });
+  let message = '';
+  for (i=0; i<vinTable_sort_arr.length; i++) {
+    message += vinTable_sort_arr[i].join(' : ') + '\n\r';
+  }
+  alert(message);
 });
